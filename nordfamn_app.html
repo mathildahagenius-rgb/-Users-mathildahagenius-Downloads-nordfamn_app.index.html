@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nordfamn — by Nordarv</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cr:#FAFAF7;--cd:#F4F1EB;--cm:#EBE6DC;
+  --tp:#928575;--td:#6e5c4d;--tm:#7a6a5a;--tl:#b5a898;
+  --ts:rgba(146,133,117,0.12);
+  --b:rgba(146,133,117,0.18);--bm:rgba(146,133,117,0.32);
+  --ok:#6b8c6e;--warn:#a8894a;--crit:#a05a48;
+}
+html,body{margin:0;padding:0;background:var(--cr);height:100%;overflow:hidden;}
+body{font-family:'Jost',sans-serif;color:var(--td);}
+.app{width:100%;height:100vh;display:flex;flex-direction:column;background:var(--cr);}
+.screen{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.page.active{display:flex;}
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.scroll-area::-webkit-scrollbar{display:none;}
+.bottom-nav{height:68px;background:var(--cr);border-top:0.5px solid var(--b);display:flex;align-items:flex-start;padding-top:8px;flex-shrink:0;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;background:none;border:none;}
+.bn-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.bn-icon i{font-size:20px;color:var(--tl);transition:color 0.15s;}
+.bn-item.active .bn-icon{background:var(--ts);}
+.bn-item.active .bn-icon i{color:var(--td);}
+.bn-label{font-size:10px;letter-spacing:0.04em;color:var(--tl);}
+.bn-item.active .bn-label{color:var(--td);}
+.ph{padding:16px 20px 12px;background:var(--cd);border-bottom:0.5px solid var(--b);flex-shrink:0;}
+.ph-ey{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--tl);margin-bottom:3px;}
+.ph-ti{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--td);}
+.ph-su{font-size:11px;color:var(--tl);margin-top:2px;}
+.body{padding:16px 20px;}
+.sl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--tl);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sl::after{content:'';flex:1;height:0.5px;background:var(--b);}
+.ob-splash{background:var(--cd);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center;}
+.ob-logo-row{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:1.5rem;}
+.ob-logo-row img{height:20px;filter:brightness(0) saturate(100%) invert(40%) sepia(15%) saturate(400%) hue-rotate(10deg) brightness(80%);}
+.ob-appname{font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--tp);border-left:0.5px solid var(--bm);padding-left:10px;}
+.ob-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--td);line-height:1.2;margin-bottom:8px;}
+.ob-title em{font-style:italic;color:var(--tp);}
+.ob-sub{font-size:12px;color:var(--tl);line-height:1.65;margin-bottom:1.25rem;}
+.ob-steps{display:flex;justify-content:center;gap:5px;margin-top:8px;}
+.ob-step{width:20px;height:2px;background:var(--cm);border-radius:2px;transition:all 0.3s;}
+.ob-step.active{background:var(--tp);width:32px;}
+.ob-step.done{background:var(--tl);}
+.ob-scroll{flex:1;overflow-y:auto;padding:20px;}
+.ob-scroll::-webkit-scrollbar{display:none;}
+.fs-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--td);margin-bottom:2px;}
+.fs-sub{font-size:11px;color:var(--tl);margin-bottom:16px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--tm);margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;background:white;border:0.5px solid var(--bm);border-radius:8px;font-family:'Jost',sans-serif;font-size:14px;color:var(--td);outline:none;-webkit-appearance:none;}
+.field input::placeholder,.field textarea::placeholder{color:var(--tl);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--tp);}
+.field textarea{resize:none;min-height:70px;}
+.field select{appearance:none;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field-req{color:var(--crit);}
+.skill-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.skill-chip{padding:9px 10px;border:0.5px solid var(--bm);border-radius:8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:6px;background:white;color:var(--tm);font-family:'Jost',sans-serif;transition:all 0.15s;}
+.skill-chip.selected{background:var(--cd);border-color:var(--tp);color:var(--td);}
+.skill-dot{width:5px;height:5px;border-radius:50%;border:1px solid var(--bm);flex-shrink:0;}
+.skill-chip.selected .skill-dot{background:var(--tp);border-color:var(--tp);}
+.level-sel{display:flex;gap:5px;margin-top:4px;}
+.lbtn{flex:1;padding:9px 4px;border:0.5px solid var(--bm);border-radius:8px;font-size:10px;cursor:pointer;background:white;color:var(--tm);text-align:center;font-family:'Jost',sans-serif;}
+.lbtn.active{background:var(--cd);border-color:var(--tp);color:var(--td);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--cd);border:0.5px solid var(--b);border-radius:10px;margin-bottom:8px;}
+.tl-label{font-size:13px;color:var(--td);}
+.tl-sub{font-size:10px;color:var(--tl);margin-top:1px;}
+.tgl{width:44px;height:26px;border-radius:13px;background:var(--cm);position:relative;cursor:pointer;transition:background 0.2s;border:none;flex-shrink:0;}
+.tgl.on{background:var(--tp);}
+.tgl::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:white;top:3px;left:3px;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.tgl.on::after{transform:translateX(18px);}
+.ob-actions{padding:16px 20px;background:var(--cr);border-top:0.5px solid var(--b);flex-shrink:0;display:flex;gap:8px;}
+.btn-p{flex:1;padding:14px;background:var(--td);color:var(--cr);border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;}
+.btn-s{padding:14px 18px;background:transparent;color:var(--tm);border:0.5px solid var(--bm);border-radius:12px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;}
+.welcome-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+.welcome-mark{width:56px;height:56px;border-radius:50%;background:var(--cd);border:0.5px solid var(--bm);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 1rem;color:var(--tp);}
+.welcome-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--td);margin-bottom:6px;}
+.welcome-body{font-size:12px;color:var(--tm);line-height:1.65;margin-bottom:1.5rem;}
+.home-banner{background:linear-gradient(160deg,#6e5c4d,#928575);padding:20px;position:relative;overflow:hidden;flex-shrink:0;}
+.home-banner::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.hb-greeting{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(243,239,227,0.6);margin-bottom:4px;}
+.hb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#F3EFE3;}
+.hb-sub{font-size:11px;color:rgba(243,239,227,0.55);margin-top:2px;}
+.hb-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.hb-stat{background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;}
+.hb-stat-n{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:#F3EFE3;}
+.hb-stat-l{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(243,239,227,0.55);margin-top:1px;}
+.task{display:flex;align-items:center;gap:10px;padding:12px;background:white;border:0.5px solid var(--b);border-radius:10px;margin-bottom:7px;cursor:pointer;}
+.task:active{opacity:0.7;}
+.task-check{width:22px;height:22px;border:0.5px solid var(--bm);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.task-check.done{background:var(--ok);border-color:var(--ok);}
+.task-name{font-size:13px;color:var(--td);flex:1;line-height:1.3;}
+.task-name.done{text-decoration:line-through;opacity:0.4;}
+.task-meta{font-size:10px;color:var(--tl);margin-top:2px;}
+.tbadge{font-size:9px;padding:3px 8px;border-radius:20px;border:0.5px solid var(--bm);color:var(--tl);white-space:nowrap;flex-shrink:0;}
+.tbadge.u{border-color:var(--crit);color:var(--crit);}
+.tbadge.s{border-color:var(--warn);color:var(--warn);}
+.tbadge.ok{border-color:var(--ok);color:var(--ok);}
+.evt-pill{display:flex;align-items:center;gap:8px;padding:8px 12px;background:white;border:0.5px solid var(--b);border-radius:10px;margin-bottom:6px;border-left:3px solid;}
+.evt-pill.tailor{border-left-color:var(--warn);}
+.evt-pill.delivery{border-left-color:var(--crit);}
+.evt-pill.fitting{border-left-color:var(--ok);}
+.evt-pill.event{border-left-color:var(--tl);}
+.ep-date{font-size:9px;color:var(--tl);min-width:60px;}
+.ep-name{font-size:11px;color:var(--td);flex:1;}
+.ep-type{font-size:9px;color:var(--tl);}
+.filter-row{display:flex;gap:6px;padding:12px 20px;overflow-x:auto;flex-shrink:0;background:var(--cr);}
+.filter-row::-webkit-scrollbar{display:none;}
+.fp{padding:6px 14px;border:0.5px solid var(--bm);border-radius:20px;font-size:10px;cursor:pointer;white-space:nowrap;color:var(--tm);background:white;font-family:'Jost',sans-serif;}
+.fp.active{background:var(--td);color:var(--cr);border-color:var(--td);}
+.cal-wrap{background:var(--cd);border:0.5px solid var(--b);border-radius:12px;padding:14px;margin-bottom:12px;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--td);}
+.cal-btn{background:none;border:0.5px solid var(--bm);border-radius:8px;color:var(--tm);cursor:pointer;padding:4px 9px;font-size:13px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-dl{font-size:9px;text-transform:uppercase;color:var(--tl);text-align:center;padding-bottom:4px;}
+.cal-day{min-height:32px;padding:2px;font-size:11px;color:var(--tm);text-align:center;border-radius:6px;}
+.cal-day.today{background:var(--ts);color:var(--td);font-weight:500;}
+.cal-day.other{opacity:0.3;}
+.cal-dot{width:4px;height:4px;border-radius:50%;margin:1px auto 0;}
+.map-container{position:relative;flex:1;min-height:0;}
+.map-canvas{width:100%;height:100%;background:#ccdde8;position:relative;overflow:hidden;}
+.map-canvas svg{width:100%;height:100%;}
+.map-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--cr);border-radius:20px 20px 0 0;padding:16px 20px 24px;transform:translateY(100%);transition:transform 0.3s ease;border-top:0.5px solid var(--b);}
+.map-sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px;height:3px;background:var(--bm);border-radius:2px;margin:0 auto 12px;}
+.sheet-title{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--td);margin-bottom:3px;}
+.sheet-meta{font-size:11px;color:var(--tl);margin-bottom:6px;}
+.sheet-skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.skill-tag{padding:3px 9px;border:0.5px solid var(--bm);border-radius:20px;font-size:10px;color:var(--tm);}
+.map-legend{position:absolute;top:12px;right:12px;background:rgba(250,250,247,0.94);border-radius:8px;padding:8px 10px;border:0.5px solid var(--b);}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--tm);margin-bottom:3px;}
+.leg-item:last-child{margin:0;}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.map-close{position:absolute;top:12px;left:12px;width:32px;height:32px;border-radius:50%;background:rgba(250,250,247,0.95);border:0.5px solid var(--b);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--td);}
+.ev-card{background:white;border:0.5px solid var(--b);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.ev-accent{height:4px;}
+.ev-accent.workshop{background:var(--tp);}
+.ev-accent.event{background:var(--tl);}
+.ev-accent.collab{background:var(--tm);}
+.ev-body{padding:12px 14px;}
+.ev-tag{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--tl);margin-bottom:3px;}
+.ev-title{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--td);margin-bottom:3px;line-height:1.3;}
+.ev-meta{font-size:10px;color:var(--tl);line-height:1.5;}
+.ev-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.ev-spots{font-size:10px;color:var(--tm);}
+.ev-spots span{color:var(--ok);}
+.btn-book{padding:7px 16px;border:0.5px solid var(--bm);background:transparent;color:var(--tm);font-family:'Jost',sans-serif;font-size:10px;cursor:pointer;border-radius:8px;letter-spacing:0.07em;text-transform:uppercase;}
+.prof-banner{background:linear-gradient(160deg,#6e5c4d,#928575);padding:24px 20px 20px;text-align:center;flex-shrink:0;}
+.prof-av{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#F3EFE3;margin:0 auto 10px;font-style:italic;}
+.prof-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:#F3EFE3;}
+.prof-loc{font-size:11px;color:rgba(243,239,227,0.6);margin-top:2px;}
+.prof-badges{display:flex;gap:5px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
+.pbadge{font-size:9px;padding:3px 9px;border-radius:20px;border:0.5px solid rgba(255,255,255,0.3);color:rgba(243,239,227,0.8);}
+.stags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+.stag{padding:4px 10px;border:0.5px solid var(--b);border-radius:8px;font-size:10px;color:var(--tm);background:white;}
+.stag.p{background:var(--cd);border-color:var(--bm);color:var(--td);}
+.divider{height:0.5px;background:var(--b);margin:12px 0;}
+.err{color:var(--crit);font-size:10px;margin-top:3px;display:none;}
+.err.show{display:block;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--td);color:var(--cr);padding:8px 18px;border-radius:20px;font-size:12px;transition:all 0.3s;z-index:300;white-space:nowrap;opacity:0;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="screen">
+
+    <div class="page active" id="page-onboarding" style="background:var(--cd);">
+      <div class="ob-splash" id="ob-hero">
+        <div class="ob-logo-row">
+          <span class="ob-appname">Nordfamn</span>
+        </div>
+        <div style="margin-bottom:6px;font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--tl)">Diffuse Production</div>
+        <div class="ob-title">Become part of<br><em>the heritage</em></div>
+        <div class="ob-sub">A platform for craftspeople, designers and students preserving Nordic textile traditions.</div>
+        <div class="ob-steps" id="ob-steps">
+          <div class="ob-step active"></div>
+          <div class="ob-step"></div>
+          <div class="ob-step"></div>
+          <div class="ob-step"></div>
+          <div class="ob-step"></div>
+        </div>
+      </div>
+      <div class="ob-scroll" id="ob-form"></div>
+      <div class="ob-actions" id="ob-actions">
+        <button class="btn-s hidden" id="backBtn" onclick="prevStep()">Back</button>
+        <button class="btn-p" id="nextBtn" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+
+    <div class="page" id="page-home">
+      <div class="home-banner">
+        <div class="hb-greeting">Welcome back</div>
+        <div class="hb-name" id="home-greeting">Elsa Lindstrom</div>
+        <div class="hb-sub">Nordarv diffuse production member</div>
+        <div class="hb-stats">
+          <div class="hb-stat"><div class="hb-stat-n">4</div><div class="hb-stat-l">Active orders</div></div>
+          <div class="hb-stat"><div class="hb-stat-n">3</div><div class="hb-stat-l">Tasks due</div></div>
+          <div class="hb-stat"><div class="hb-stat-n">2</div><div class="hb-stat-l">Pit stops</div></div>
+          <div class="hb-stat"><div class="hb-stat-n">1</div><div class="hb-stat-l">Fitting this month</div></div>
+        </div>
+      </div>
+      <div class="scroll-area">
+        <div class="body">
+          <div class="sl">Upcoming deadlines</div>
+          <div class="task" onclick="toggleTask(this,'ht0')"><div class="task-check" id="ht0"></div><div style="flex:1"><div class="task-name" id="ht0-n">Embroidery on vest - Ingrid Karlsson</div><div class="task-meta">Due 28 Nov / Maria Nordstrom</div></div><div class="tbadge u">Urgent</div></div>
+          <div class="task" onclick="toggleTask(this,'ht1')"><div class="task-check" id="ht1"></div><div style="flex:1"><div class="task-name" id="ht1-n">Sewing linen shirt - Bunad commission</div><div class="task-meta">Due 5 Dec / Your atelier</div></div><div class="tbadge s">Soon</div></div>
+          <div class="task" onclick="toggleTask(this,'ht2')"><div class="task-check done" id="ht2"><i class="ti ti-check" style="font-size:10px;color:white"></i></div><div style="flex:1"><div class="task-name done" id="ht2-n">Pattern draft - NK Heritage skirt</div><div class="task-meta">Completed 14 Nov</div></div><div class="tbadge ok">Done</div></div>
+          <div class="divider"></div>
+          <div class="sl">Calendar preview</div>
+          <div class="evt-pill tailor"><div class="ep-date">28 Nov 2025</div><div class="ep-name">Vest embroidery deadline</div><div class="ep-type">Tailor</div></div>
+          <div class="evt-pill delivery"><div class="ep-date">10 Dec 2025</div><div class="ep-name">Ingrid Karlsson delivery</div><div class="ep-type">Delivery</div></div>
+          <div class="evt-pill fitting"><div class="ep-date">12 Dec 2025</div><div class="ep-name">Final fitting - Bunad</div><div class="ep-type">Fitting</div></div>
+          <div class="evt-pill event"><div class="ep-date">14 Dec 2025</div><div class="ep-name">NK X Nordarv Heritage Christmas</div><div class="ep-type">Event</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-tasks">
+      <div class="ph"><div class="ph-ey">Production</div><div class="ph-ti">My Tasks</div></div>
+      <div class="filter-row">
+        <button class="fp active" onclick="filterTasks(this,'all')">All</button>
+        <button class="fp" onclick="filterTasks(this,'embroidery')">Embroidery</button>
+        <button class="fp" onclick="filterTasks(this,'sewing')">Sewing</button>
+        <button class="fp" onclick="filterTasks(this,'pattern')">Pattern</button>
+        <button class="fp" onclick="filterTasks(this,'fitting')">Fitting</button>
+      </div>
+      <div class="scroll-area" style="padding:12px 16px;">
+        <div class="sl">In progress</div>
+        <div class="task" data-cat="embroidery" onclick="toggleTask(this,'t0')"><div class="task-check" id="t0"></div><div style="flex:1"><div class="task-name" id="t0-n">Embroidery on vest - Ingrid Karlsson</div><div class="task-meta">Floral / purple wool / Maria Nordstrom</div></div><div class="tbadge u">28 Nov</div></div>
+        <div class="task" data-cat="sewing" onclick="toggleTask(this,'t1')"><div class="task-check" id="t1"></div><div style="flex:1"><div class="task-name" id="t1-n">Sew linen blouse with bishop sleeves</div><div class="task-meta">Size 38 / Bunad commission Sara Dahl</div></div><div class="tbadge s">5 Dec</div></div>
+        <div class="task" data-cat="sewing" onclick="toggleTask(this,'t2')"><div class="task-check" id="t2"></div><div style="flex:1"><div class="task-name" id="t2-n">Sew navy wool skirt - full length</div><div class="task-meta">Pleated / hand finished / Sara Dahl</div></div><div class="tbadge s">5 Dec</div></div>
+        <div class="task" data-cat="embroidery" onclick="toggleTask(this,'t3')"><div class="task-check" id="t3"></div><div style="flex:1"><div class="task-name" id="t3-n">Embroider apron border - botanical</div><div class="task-meta">Red / ochre / white / Karl Andersson</div></div><div class="tbadge s">8 Dec</div></div>
+        <div class="task" data-cat="fitting" onclick="toggleTask(this,'t4')"><div class="task-check" id="t4"></div><div style="flex:1"><div class="task-name" id="t4-n">Baste vest for toile fitting</div><div class="task-meta">Muslin version / adjust before final cut</div></div><div class="tbadge s">2 Dec</div></div>
+        <div class="task" data-cat="pattern" onclick="toggleTask(this,'t5')"><div class="task-check" id="t5"></div><div style="flex:1"><div class="task-name" id="t5-n">Grade pattern NK Heritage skirt 34-44</div><div class="task-meta">Based on approved sample size 38</div></div><div class="tbadge ok">15 Jan</div></div>
+        <div class="sl" style="margin-top:8px">Completed</div>
+        <div class="task" data-cat="pattern" onclick="toggleTask(this,'t6')"><div class="task-check done" id="t6"><i class="ti ti-check" style="font-size:10px;color:white"></i></div><div style="flex:1"><div class="task-name done" id="t6-n">Pattern draft - NK Heritage skirt</div><div class="task-meta">Completed 14 Nov 2025</div></div><div class="tbadge ok">Done</div></div>
+        <div class="task" data-cat="sewing" onclick="toggleTask(this,'t7')"><div class="task-check done" id="t7"><i class="ti ti-check" style="font-size:10px;color:white"></i></div><div style="flex:1"><div class="task-name done" id="t7-n">Cut and sew belt in woven band</div><div class="task-meta">Completed 10 Nov 2025</div></div><div class="tbadge ok">Done</div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-calendar">
+      <div class="ph"><div class="ph-ey">Schedule</div><div class="ph-ti">Calendar</div></div>
+      <div class="scroll-area" style="padding:12px 16px;">
+        <div class="cal-wrap">
+          <div class="cal-header">
+            <div class="cal-title" id="calTitle">November 2025</div>
+            <div style="display:flex;gap:4px">
+              <button class="cal-btn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+              <button class="cal-btn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tm)"><div style="width:8px;height:8px;background:var(--crit);border-radius:50%"></div>Delivery</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tm)"><div style="width:8px;height:8px;background:var(--warn);border-radius:50%"></div>Tailor</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tm)"><div style="width:8px;height:8px;background:var(--ok);border-radius:50%"></div>Fitting</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--tm)"><div style="width:8px;height:8px;background:var(--tl);border-radius:50%"></div>Event</div>
+        </div>
+        <div class="sl">All milestones</div>
+        <div class="evt-pill tailor"><div class="ep-date">28 Nov 2025</div><div class="ep-name">Vest embroidery complete</div><div class="ep-type">Tailor</div></div>
+        <div class="evt-pill fitting"><div class="ep-date">2 Dec 2025</div><div class="ep-name">Toile fitting - Sara Dahl</div><div class="ep-type">Fitting</div></div>
+        <div class="evt-pill tailor"><div class="ep-date">5 Dec 2025</div><div class="ep-name">Linen blouse and skirt</div><div class="ep-type">Tailor</div></div>
+        <div class="evt-pill delivery"><div class="ep-date">10 Dec 2025</div><div class="ep-name">Delivery - Ingrid Karlsson</div><div class="ep-type">Delivery</div></div>
+        <div class="evt-pill fitting"><div class="ep-date">12 Dec 2025</div><div class="ep-name">Final fitting - Sara Dahl</div><div class="ep-type">Fitting</div></div>
+        <div class="evt-pill event"><div class="ep-date">14 Dec 2025</div><div class="ep-name">NK X Nordarv Heritage Christmas</div><div class="ep-type">Event</div></div>
+        <div class="evt-pill delivery"><div class="ep-date">19 Dec 2025</div><div class="ep-name">Delivery - Sara Dahl full Bunad</div><div class="ep-type">Delivery</div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-pitstops">
+      <div class="ph"><div class="ph-ey">Network</div><div class="ph-ti">Pit Stops</div><div class="ph-su">Tap a location to see details</div></div>
+      <div class="map-container">
+        <div class="map-canvas">
+          <svg viewBox="0 0 375 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="375" height="460" fill="#ccdde8"/>
+            <path d="M200,18 L215,22 L228,30 L238,42 L244,56 L246,72 L244,88 L240,104 L238,118 L240,132 L244,146 L246,160 L244,174 L240,188 L238,202 L240,216 L244,230 L246,244 L242,258 L236,270 L228,280 L218,288 L208,294 L196,298 L184,298 L172,294 L162,286 L154,276 L148,264 L144,252 L142,238 L140,224 L138,210 L136,196 L134,182 L132,168 L130,154 L128,140 L126,126 L124,112 L122,98 L122,84 L124,70 L128,56 L136,44 L146,34 L158,26 L170,20 L184,17 L200,18Z" fill="#ddd8ce" stroke="#c8c2b6" stroke-width="1"/>
+            <path d="M162,286 L154,276 L148,264 L150,272 L156,284 L166,294 L178,300 L190,302 L200,300 L208,294 L196,298 L184,298 L172,294 L162,286Z" fill="#ddd8ce" stroke="#c8c2b6" stroke-width="0.5"/>
+            <ellipse cx="290" cy="260" rx="12" ry="18" fill="#ddd8ce" stroke="#c8c2b6" stroke-width="0.8"/>
+            <text x="290" y="264" font-size="7" fill="#a09080" font-family="Jost,sans-serif" text-anchor="middle">Gotland</text>
+            <ellipse cx="255" cy="295" rx="5" ry="14" fill="#ddd8ce" stroke="#c8c2b6" stroke-width="0.6"/>
+            <g onclick="openPit(0)" style="cursor:pointer">
+              <circle cx="228" cy="185" r="11" fill="#928575" opacity="0.9"/>
+              <circle cx="228" cy="185" r="5" fill="#F3EFE3"/>
+              <rect x="240" y="175" width="80" height="19" rx="4" fill="rgba(250,250,247,0.88)"/>
+              <text x="248" y="188" font-size="9" fill="#4a3d30" font-family="Jost,sans-serif" font-weight="500">Stockholm</text>
+            </g>
+            <g onclick="openPit(1)" style="cursor:pointer">
+              <circle cx="148" cy="262" r="11" fill="#928575" opacity="0.9"/>
+              <circle cx="148" cy="262" r="5" fill="#F3EFE3"/>
+              <rect x="161" y="252" width="86" height="19" rx="4" fill="rgba(250,250,247,0.88)"/>
+              <text x="169" y="265" font-size="9" fill="#4a3d30" font-family="Jost,sans-serif" font-weight="500">Gothenburg</text>
+            </g>
+            <g onclick="openPit(2)" style="cursor:pointer">
+              <circle cx="172" cy="300" r="11" fill="#928575" opacity="0.9"/>
+              <circle cx="172" cy="300" r="5" fill="#F3EFE3"/>
+              <rect x="185" y="290" width="66" height="19" rx="4" fill="rgba(250,250,247,0.88)"/>
+              <text x="193" y="303" font-size="9" fill="#4a3d30" font-family="Jost,sans-serif" font-weight="500">Malmo</text>
+            </g>
+            <g onclick="openPit(3)" style="cursor:pointer">
+              <circle cx="218" cy="158" r="10" fill="#b5a898" opacity="0.9"/>
+              <circle cx="218" cy="158" r="4" fill="#F3EFE3"/>
+              <rect x="230" y="149" width="66" height="17" rx="4" fill="rgba(250,250,247,0.82)"/>
+              <text x="238" y="161" font-size="8" fill="#6e5c4d" font-family="Jost,sans-serif">Uppsala</text>
+            </g>
+            <g onclick="openPit(4)" style="cursor:pointer">
+              <circle cx="170" cy="248" r="10" fill="#b5a898" opacity="0.9"/>
+              <circle cx="170" cy="248" r="4" fill="#F3EFE3"/>
+              <rect x="182" y="239" width="56" height="17" rx="4" fill="rgba(250,250,247,0.82)"/>
+              <text x="190" y="251" font-size="8" fill="#6e5c4d" font-family="Jost,sans-serif">Boras</text>
+            </g>
+            <g onclick="openPit(5)" style="cursor:pointer">
+              <circle cx="200" cy="228" r="10" fill="#b5a898" opacity="0.9"/>
+              <circle cx="200" cy="228" r="4" fill="#F3EFE3"/>
+              <rect x="212" y="219" width="72" height="17" rx="4" fill="rgba(250,250,247,0.82)"/>
+              <text x="220" y="231" font-size="8" fill="#6e5c4d" font-family="Jost,sans-serif">Linkoping</text>
+            </g>
+            <g onclick="openPit(6)" style="cursor:pointer">
+              <circle cx="216" cy="80" r="9" fill="#cfc6bb" opacity="0.9"/>
+              <circle cx="216" cy="80" r="4" fill="#F3EFE3"/>
+              <rect x="227" y="72" width="56" height="16" rx="4" fill="rgba(250,250,247,0.78)"/>
+              <text x="234" y="83" font-size="8" fill="#928575" font-family="Jost,sans-serif">Umea</text>
+            </g>
+          </svg>
+          <div class="map-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:#928575"></div>Active stop</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#b5a898"></div>Secondary stop</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#cfc6bb"></div>Planned stop</div>
+          </div>
+          <div class="map-close hidden" id="mapClose" onclick="closePit()"><i class="ti ti-x"></i></div>
+        </div>
+        <div class="map-sheet" id="mapSheet">
+          <div class="sheet-handle"></div>
+          <div id="sheetContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-events">
+      <div class="ph"><div class="ph-ey">Calendar</div><div class="ph-ti">Events</div></div>
+      <div class="filter-row">
+        <button class="fp active">All</button>
+        <button class="fp">Workshops</button>
+        <button class="fp">Events</button>
+        <button class="fp">Collabs</button>
+      </div>
+      <div class="scroll-area" style="padding:12px 16px;">
+        <div class="ev-card"><div class="ev-accent event"></div><div class="ev-body"><div class="ev-tag">Collection / Event</div><div class="ev-title">NK X Nordarv Heritage Christmas</div><div class="ev-meta">14 Dec 2025 / NK Stockholm / 14:00 to 20:00</div><div class="ev-footer"><div class="ev-spots"><span>12</span> spots</div><button class="btn-book" onclick="showToast('Booked: NK X Nordarv Heritage Christmas')">Book</button></div></div></div>
+        <div class="ev-card"><div class="ev-accent workshop"></div><div class="ev-body"><div class="ev-tag">Workshop</div><div class="ev-title">Knitting Atelier / Nordic Patterns</div><div class="ev-meta">22 Nov 2025 / Gamla Stan / 10:00 to 15:00</div><div class="ev-footer"><div class="ev-spots"><span>4</span> spots</div><button class="btn-book" onclick="showToast('Booked: Knitting Atelier')">Book</button></div></div></div>
+        <div class="ev-card"><div class="ev-accent workshop"></div><div class="ev-body"><div class="ev-tag">Workshop</div><div class="ev-title">Patternmaking Foundation Course</div><div class="ev-meta">11 Jan 2026 / Sodermalm / 09:00 to 17:00</div><div class="ev-footer"><div class="ev-spots"><span>6</span> spots</div><button class="btn-book" onclick="showToast('Booked: Patternmaking')">Book</button></div></div></div>
+        <div class="ev-card"><div class="ev-accent collab"></div><div class="ev-body"><div class="ev-tag">Collaboration</div><div class="ev-title">Textile Installation X Moderna Museet</div><div class="ev-meta">8 Feb 2026 / Skeppsholmen / Full day</div><div class="ev-footer"><div class="ev-spots"><span>5</span> spots</div><button class="btn-book" onclick="showToast('Applied to Moderna Museet')">Apply</button></div></div></div>
+        <div class="ev-card"><div class="ev-accent workshop"></div><div class="ev-body"><div class="ev-tag">Workshop</div><div class="ev-title">Natural Dyes and Botanical Dyeing</div><div class="ev-meta">3 Mar 2026 / Djurgarden / 11:00 to 16:00</div><div class="ev-footer"><div class="ev-spots"><span>8</span> spots</div><button class="btn-book" onclick="showToast('Booked: Botanical Dyeing')">Book</button></div></div></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-profile">
+      <div class="prof-banner">
+        <div class="prof-av" id="profAv">EL</div>
+        <div class="prof-name" id="profName">Elsa Lindstrom</div>
+        <div class="prof-loc" id="profLoc">Stockholm</div>
+        <div class="prof-badges"><div class="pbadge">Mentor</div><div class="pbadge">Craftsperson</div><div class="pbadge">Member since 2025</div></div>
+      </div>
+      <div class="scroll-area">
+        <div class="body">
+          <div class="sl">Skills</div>
+          <div class="stags" id="profSkills"><div class="stag p">Sewing</div><div class="stag p">Embroidery</div><div class="stag p">Draping</div><div class="stag">Patternmaking</div><div class="stag">Natural dyeing</div></div>
+          <div class="divider"></div>
+          <div class="sl">Activity</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px">
+            <div style="background:var(--cd);border:0.5px solid var(--b);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--td)">3</div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tl);margin-top:1px">Workshops</div></div>
+            <div style="background:var(--cd);border:0.5px solid var(--b);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--td)">2</div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tl);margin-top:1px">Apprentices</div></div>
+            <div style="background:var(--cd);border:0.5px solid var(--b);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--td)">7</div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tl);margin-top:1px">Techniques</div></div>
+            <div style="background:var(--cd);border:0.5px solid var(--b);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--td)">4</div><div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--tl);margin-top:1px">Orders</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="sl">About</div>
+          <div id="profBio" style="font-size:12px;color:var(--tm);line-height:1.7;padding-bottom:24px">A craftsperson dedicated to preserving Nordic textile traditions through sewing, embroidery and draping.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav hidden" id="bottomNav">
+    <button class="bn-item active" onclick="showPage('home')"><div class="bn-icon"><i class="ti ti-home"></i></div><span class="bn-label">Home</span></button>
+    <button class="bn-item" onclick="showPage('tasks')"><div class="bn-icon"><i class="ti ti-checklist"></i></div><span class="bn-label">Tasks</span></button>
+    <button class="bn-item" onclick="showPage('calendar')"><div class="bn-icon"><i class="ti ti-calendar"></i></div><span class="bn-label">Calendar</span></button>
+    <button class="bn-item" onclick="showPage('pitstops')"><div class="bn-icon"><i class="ti ti-map-pin"></i></div><span class="bn-label">Pit Stops</span></button>
+    <button class="bn-item" onclick="showPage('events')"><div class="bn-icon"><i class="ti ti-ticket"></i></div><span class="bn-label">Events</span></button>
+    <button class="bn-item" onclick="showPage('profile')"><div class="bn-icon"><i class="ti ti-user"></i></div><span class="bn-label">Profile</span></button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let fd={},step=0;
+const stepDefs=[
+  {render:()=>`
+    <div class="fs-title">Personal details</div>
+    <div class="fs-sub">Fields marked * are required</div>
+    <div class="field-row">
+      <div class="field"><label>First name <span class="field-req">*</span></label><input id="f_fn" placeholder="Anna" value="${fd.fn||''}" inputmode="text"></div>
+      <div class="field"><label>Last name <span class="field-req">*</span></label><input id="f_ln" placeholder="Lindstrom" value="${fd.ln||''}" inputmode="text"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Age <span class="field-req">*</span></label><input id="f_age" type="number" placeholder="32" value="${fd.age||''}" inputmode="numeric"></div>
+      <div class="field"><label>City <span class="field-req">*</span></label><input id="f_city" placeholder="Stockholm" value="${fd.city||''}" inputmode="text"></div>
+    </div>
+    <div class="field"><label>Email <span class="field-req">*</span></label><input id="f_email" type="email" placeholder="anna@example.com" value="${fd.email||''}" inputmode="email"></div>
+    <div class="field"><label>Education in textile or fashion</label>
+      <select id="f_edu">${['','Konstfack','Swedish School of Textiles','Beckmans College of Design','Folk high school','Self-taught','No formal education'].map(o=>`<option value="${o}" ${fd.edu===o?'selected':''}>${o||'Select...'}</option>`).join('')}</select>
+    </div>
+    <div class="field"><label>About you <span class="field-req">*</span></label><textarea id="f_bio" placeholder="Tell us about your craft practice and relationship with Nordic textile traditions..." rows="3">${fd.bio||''}</textarea><div class="err" id="bio-err">Please write at least a short bio</div></div>
+  `},
+  {render:()=>`
+    <div class="fs-title">Craft and techniques</div>
+    <div class="fs-sub">Select all you practice</div>
+    <div class="skill-grid">${['Sewing','Patternmaking','Embroidery','Weaving','Knitting','Crochet','Nalbinding','Braiding','Leatherwork','Tailoring','Draping','Natural dyeing'].map(s=>`<div class="skill-chip ${(fd.skills||[]).includes(s)?'selected':''}" onclick="toggleSk(this,'${s}')"><div class="skill-dot"></div>${s}</div>`).join('')}</div>
+    <div style="margin-top:16px"></div>
+    <div class="fs-title" style="font-size:16px">Experience level</div>
+    <div class="fs-sub">How long have you worked with textile craft?</div>
+    <div class="level-sel">${['Beginner','1-3 yrs','4-8 yrs','9+ yrs'].map(l=>`<button class="lbtn ${fd.level===l?'active':''}" onclick="setLevel(this,'${l}')">${l}</button>`).join('')}</div>
+  `},
+  {render:()=>`
+    <div class="fs-title">Mentorship</div>
+    <div class="fs-sub">Choose how you want to contribute</div>
+    <div class="toggle-row"><div><div class="tl-label">Accept apprentices</div><div class="tl-sub">Teach your techniques to newcomers</div></div><button class="tgl ${fd.mentor?'on':''}" id="tg_mentor" onclick="toggleF('mentor','tg_mentor')"></button></div>
+    <div class="toggle-row"><div><div class="tl-label">Lead or assist workshops</div><div class="tl-sub">Host or co-host Nordarv workshops</div></div><button class="tgl ${fd.workshop?'on':''}" id="tg_workshop" onclick="toggleF('workshop','tg_workshop')"></button></div>
+    <div class="toggle-row"><div><div class="tl-label">Contribute to collections</div><div class="tl-sub">Produce garments for Nordarv</div></div><button class="tgl ${fd.collections?'on':''}" id="tg_collections" onclick="toggleF('collections','tg_collections')"></button></div>
+    <div class="toggle-row"><div><div class="tl-label">Visible in community</div><div class="tl-sub">Let others find and contact you</div></div><button class="tgl ${fd.visible!==false?'on':''}" id="tg_visible" onclick="toggleF('visible','tg_visible')"></button></div>
+  `},
+  {render:()=>`
+    <div class="fs-title">Book your first event</div>
+    <div class="fs-sub">Reserve a spot - add more later</div>
+    ${[
+      {id:'ev1',name:'NK X Nordarv Heritage Christmas',date:'14 Dec 2025',spots:12},
+      {id:'ev2',name:'Knitting Atelier / Nordic Patterns',date:'22 Nov 2025',spots:4},
+      {id:'ev3',name:'Patternmaking Foundation Course',date:'11 Jan 2026',spots:6},
+      {id:'ev4',name:'Natural Dyes and Botanical Dyeing',date:'3 Mar 2026',spots:8},
+    ].map(e=>`
+      <div onclick="toggleEv('${e.id}')" style="display:flex;align-items:center;gap:10px;padding:12px;background:${(fd.events||[]).includes(e.id)?'var(--cd)':'white'};border:0.5px solid ${(fd.events||[]).includes(e.id)?'var(--tp)':'var(--b)'};border-radius:10px;margin-bottom:7px;cursor:pointer;">
+        <div style="width:22px;height:22px;border:0.5px solid var(--bm);border-radius:6px;flex-shrink:0;background:${(fd.events||[]).includes(e.id)?'var(--tp)':'transparent'};display:flex;align-items:center;justify-content:center;">${(fd.events||[]).includes(e.id)?'<i class="ti ti-check" style="font-size:11px;color:white"></i>':''}</div>
+        <div style="flex:1"><div style="font-size:12px;color:var(--td)">${e.name}</div><div style="font-size:10px;color:var(--tl);margin-top:1px">${e.date} / <span style="color:var(--ok)">${e.spots} spots</span></div></div>
+      </div>`).join('')}
+  `},
+  {render:()=>'__WELCOME__'}
+];
+function renderStep(){
+  document.getElementById('ob-steps').querySelectorAll('.ob-step').forEach((s,i)=>{s.className='ob-step'+(i===step?' active':i<step?' done':'');});
+  if(step===4){
+    document.getElementById('ob-hero').style.display='none';
+    document.getElementById('ob-actions').style.display='none';
+    document.getElementById('ob-form').innerHTML=`<div class="welcome-screen"><div class="welcome-mark"><i class="ti ti-needle-thread"></i></div><div class="welcome-title">Welcome, ${fd.fn||'craftsperson'}.</div><div class="welcome-body">You are now part of Nordarv's diffuse production. Explore the community, track tasks, book workshops and connect with craftspeople across the Nordic region.</div><button class="btn-p" style="width:100%;max-width:220px" onclick="enterApp()">Enter the platform</button></div>`;
+    return;
+  }
+  document.getElementById('ob-form').innerHTML=`<div style="animation:fadeIn 0.2s ease">${stepDefs[step].render()}</div>`;
+  document.getElementById('backBtn').className=step>0?'btn-s':'btn-s hidden';
+  document.getElementById('nextBtn').textContent=step===3?'Create profile':'Continue';
+}
+function saveStep0(){fd.fn=document.getElementById('f_fn')?.value.trim()||'';fd.ln=document.getElementById('f_ln')?.value.trim()||'';fd.age=document.getElementById('f_age')?.value||'';fd.city=document.getElementById('f_city')?.value.trim()||'';fd.email=document.getElementById('f_email')?.value.trim()||'';fd.edu=document.getElementById('f_edu')?.value||'';fd.bio=document.getElementById('f_bio')?.value.trim()||'';}
+function validateStep(){if(step===0){saveStep0();if(!fd.fn||!fd.ln||!fd.age||!fd.city||!fd.email){showToast('Please fill in all required fields');return false;}if(!fd.bio||fd.bio.length<15){const e=document.getElementById('bio-err');if(e)e.classList.add('show');showToast('Please write a short bio');return false;}}return true;}
+function nextStep(){if(!validateStep())return;if(step<4){step++;renderStep();}}
+function prevStep(){if(step>0){step--;renderStep();}}
+function toggleSk(el,s){if(!fd.skills)fd.skills=[];el.classList.toggle('selected');if(fd.skills.includes(s))fd.skills=fd.skills.filter(x=>x!==s);else fd.skills.push(s);}
+function setLevel(el,l){fd.level=l;document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function toggleF(key,id){fd[key]=!fd[key];const el=document.getElementById(id);if(el)el.classList.toggle('on',!!fd[key]);}
+function toggleEv(id){if(!fd.events)fd.events=[];if(fd.events.includes(id))fd.events=fd.events.filter(e=>e!==id);else fd.events.push(id);renderStep();}
+function enterApp(){
+  document.getElementById('page-onboarding').classList.remove('active');
+  document.getElementById('bottomNav').classList.remove('hidden');
+  const fn=fd.fn||'Elsa';const ln=fd.ln||'Lindstrom';const ini=(fn[0]||'E')+(ln[0]||'L');
+  const g=id=>document.getElementById(id);
+  if(g('home-greeting'))g('home-greeting').textContent=fn+' '+ln;
+  if(g('profAv'))g('profAv').textContent=ini;
+  if(g('profName'))g('profName').textContent=fn+' '+ln;
+  if(g('profLoc'))g('profLoc').textContent=(fd.city||'Stockholm')+(fd.edu?' / '+fd.edu:'');
+  if(g('profBio')&&fd.bio)g('profBio').textContent=fd.bio;
+  if(g('profSkills')&&fd.skills&&fd.skills.length)g('profSkills').innerHTML=fd.skills.map((s,i)=>`<div class="stag ${i<3?'p':''}">${s}</div>`).join('');
+  showPage('home');
+}
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const tabs=['home','tasks','calendar','pitstops','events','profile'];
+  document.querySelectorAll('.bn-item').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
+}
+function toggleTask(el,id){
+  const chk=document.getElementById(id);const nm=document.getElementById(id+'-n');if(!chk||!nm)return;
+  const done=chk.classList.contains('done');
+  if(done){chk.classList.remove('done');chk.innerHTML='';nm.classList.remove('done');el.querySelectorAll('.tbadge').forEach(b=>{b.className='tbadge s';b.textContent='In progress';});}
+  else{chk.classList.add('done');chk.innerHTML='<i class="ti ti-check" style="font-size:10px;color:white"></i>';nm.classList.add('done');el.querySelectorAll('.tbadge').forEach(b=>{b.className='tbadge ok';b.textContent='Done';});showToast('Task marked complete');}
+}
+function filterTasks(btn,cat){
+  document.querySelectorAll('.fp').forEach(c=>c.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.task[data-cat]').forEach(t=>{t.style.display=(cat==='all'||t.dataset.cat===cat)?'flex':'none';});
+}
+const pits=[
+  {name:'Stockholm Atelier',city:'Stockholm',person:'Elsa Lindstrom',skills:['Sewing','Embroidery','Draping'],status:'Your stop',active:true},
+  {name:'Gothenburg Studio',city:'Gothenburg',person:'Karl Andersson',skills:['Tailoring','Leatherwork','Bespoke cutting'],status:'Quality check stop',active:true},
+  {name:'Malmo Workshop',city:'Malmo',person:'Ingrid Holm',skills:['Patternmaking','Knitting'],status:'Pattern stop',active:true},
+  {name:'Uppsala Atelier',city:'Uppsala',person:'Sigrid Berg',skills:['Braiding','Natural dyeing'],status:'Apprentice stop',active:false},
+  {name:'Boras Textile Studio',city:'Boras',person:'Anna Petersson',skills:['Weaving','Natural dyeing'],status:'Material stop',active:false},
+  {name:'Linkoping Workshop',city:'Linkoping',person:'Erik Svensson',skills:['Sewing','Patternmaking'],status:'Secondary stop',active:false},
+  {name:'Umea Craft House',city:'Umea',person:'Maja Lindgren',skills:['Nalbinding','Braiding'],status:'Planned stop',active:false},
+];
+function openPit(i){
+  const p=pits[i];
+  document.getElementById('sheetContent').innerHTML=`<div class="sheet-title">${p.name}</div><div class="sheet-meta"><i class="ti ti-map-pin" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>${p.city}, Sweden</div><div class="sheet-meta"><i class="ti ti-user" style="font-size:12px;vertical-align:-1px;margin-right:3px"></i>${p.person}</div><div class="sheet-meta" style="margin-bottom:10px;color:${p.active?'var(--ok)':'var(--tl)'};font-size:10px;letter-spacing:0.08em;text-transform:uppercase">${p.status}</div><div class="sheet-skills">${p.skills.map(s=>`<div class="skill-tag">${s}</div>`).join('')}</div><button class="btn-p" style="width:100%;border-radius:12px" onclick="showToast('Message sent to ${p.person.split(' ')[0]}');closePit()"><i class="ti ti-send" style="font-size:14px;vertical-align:-2px;margin-right:6px"></i>Contact ${p.person.split(' ')[0]}</button>`;
+  document.getElementById('mapSheet').classList.add('open');
+  document.getElementById('mapClose').classList.remove('hidden');
+}
+function closePit(){document.getElementById('mapSheet').classList.remove('open');document.getElementById('mapClose').classList.add('hidden');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let calYear=2025,calMonth=10;
+const calEvts={'2025-11-22':[{c:'#6b8c6e'}],'2025-11-28':[{c:'#a8894a'}],'2025-12-2':[{c:'#6b8c6e'}],'2025-12-5':[{c:'#a8894a'}],'2025-12-8':[{c:'#a8894a'}],'2025-12-10':[{c:'#a05a48'}],'2025-12-12':[{c:'#6b8c6e'}],'2025-12-14':[{c:'#b5a898'}],'2025-12-19':[{c:'#a05a48'}]};
+function buildCal(){
+  const g=document.getElementById('calGrid');if(!g)return;g.innerHTML='';
+  document.getElementById('calTitle').textContent=months[calMonth]+' '+calYear;
+  ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(d=>{const el=document.createElement('div');el.className='cal-dl';el.textContent=d;g.appendChild(el);});
+  const first=new Date(calYear,calMonth,1);let sd=(first.getDay()+6)%7;
+  const days=new Date(calYear,calMonth+1,0).getDate();const today=new Date();
+  for(let i=0;i<sd;i++){const el=document.createElement('div');el.className='cal-day other';g.appendChild(el);}
+  for(let d=1;d<=days;d++){
+    const el=document.createElement('div');
+    el.className='cal-day'+(today.getDate()===d&&today.getMonth()===calMonth&&today.getFullYear()===calYear?' today':'');
+    el.innerHTML='<div>'+d+'</div>';
+    const ev=calEvts[calYear+'-'+(calMonth+1)+'-'+d];
+    if(ev){ev.forEach(e=>{const dot=document.createElement('div');dot.className='cal-dot';dot.style.background=e.c;el.appendChild(dot);});}
+    g.appendChild(el);
+  }
+}
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}buildCal();}
+renderStep();buildCal();
+</script>
+</body>
+</html>
